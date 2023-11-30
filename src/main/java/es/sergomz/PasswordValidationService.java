@@ -1,6 +1,7 @@
 package es.sergomz;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PasswordValidationService {
     private final List<StringValidator> validations;
@@ -10,9 +11,9 @@ public class PasswordValidationService {
     }
 
     public ValidationResult validate(String password) {
-        var errorMessages = validations.stream()
+        List<String> errorMessages = validations.stream()
                 .filter((StringValidator validator) -> !validator.validate(password).result)
-                .map(StringValidator::getErrorMessage).toList();
+                .map(StringValidator::getErrorMessage).collect(Collectors.toList());
         if (errorMessages.isEmpty()) {
             return new ValidationResult(true, "Everything is correct");
         } else {
