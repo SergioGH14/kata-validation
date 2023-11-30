@@ -4,205 +4,66 @@ import es.sergomz.validators.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.List;
 
+import static es.sergomz.validators.PasswordHelper.generatePassword;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
 
 class PasswordValidationServiceTest {
-    @Nested
-    class FirstValidations {
-        @Test
-        @DisplayName("it returns true if the password is well formed")
-        public void passwordWellFormed() {
-            String password = generateCorrectPassword();
-            boolean validation = passwordValidation.validate(password);
-            assertTrue(validation);
-        }
 
-
-        @Test
-        @DisplayName("it returns false if the password has less than 8 characters")
-        public void lessThanEightCharacters() {
-            String password = generatePassword(7, 1, 1, 1, 1);
-            boolean validation = passwordValidation.validate(password);
-            assertFalse(validation);
-        }
-
-        @Test
-        @DisplayName("it returns false if the password has less than 1 upper case")
-        public void moreThanOneUpperCase() {
-            String password = generatePassword(8, 1, 0, 1, 1);
-            boolean validation = passwordValidation.validate(password);
-            assertFalse(validation);
-        }
-
-        @Test
-        @DisplayName("it returns false if the password has less than 1 lower case")
-        public void moreThanOneLowerCase() {
-            String password = generatePassword(8, 0, 1, 1, 1);
-            boolean validation = passwordValidation.validate(password);
-            assertFalse(validation);
-        }
-
-        @Test
-        @DisplayName("it returns false if the password has less than 1 digit")
-        public void moreThanOneDigit() {
-            String password = generatePassword(8, 0, 1, 0, 1);
-            boolean validation = passwordValidation.validate(password);
-            assertFalse(validation);
-        }
-
-        @Test
-        @DisplayName("it returns false if the password has less than 1 underscore")
-        public void moreThanOneUnderScore() {
-            String password = generatePassword(8, 0, 1, 0, 0);
-            boolean validation = passwordValidation.validate(password);
-            assertFalse(validation);
-        }
-
-        private final List<StringValidator> firstValidations = List.of(
-                new LengthValidator(8),
-                new LowerCaseValidator(),
-                new UpperCaseValidator(),
-                new DigitValidator(),
-                new UnderScoreValidator());
-
-        private final PasswordValidationService passwordValidation = new PasswordValidationService(firstValidations);
-        private String generateCorrectPassword() {
-            return generatePassword(8, 1, 1, 1, 1);
-        }
-
+    @Test
+    @DisplayName("it executes all the validations and return true if all are correct")
+    public void passwordWellFormed() {
+        String password = generateCorrectPassword();
+        boolean validation = passwordValidation.validate(password);
+        validations.forEach((StringValidator validator) -> verify(validator).validate(password));
+        assertTrue(validation);
     }
 
-    @Nested
-    class SecondValidations {
-        @Test
-        @DisplayName("it returns true if the password is well formed")
-        public void passwordWellFormed() {
-            String password = generateCorrectPassword();
-            boolean validation = passwordValidation.validate(password);
-            assertTrue(validation);
-        }
-
-
-        @Test
-        @DisplayName("it returns false if the password has less than 6 characters")
-        public void lessThanSixCharacters() {
-            String password = generatePassword(5, 1, 1, 1, 1);
-            boolean validation = passwordValidation.validate(password);
-            assertFalse(validation);
-        }
-
-        @Test
-        @DisplayName("it returns false if the password has less than 1 upper case")
-        public void moreThanOneUpperCase() {
-            String password = generatePassword(6, 1, 0, 1, 1);
-            boolean validation = passwordValidation.validate(password);
-            assertFalse(validation);
-        }
-
-        @Test
-        @DisplayName("it returns false if the password has less than 1 lower case")
-        public void moreThanOneLowerCase() {
-            String password = generatePassword(6, 0, 1, 1, 1);
-            boolean validation = passwordValidation.validate(password);
-            assertFalse(validation);
-        }
-
-        @Test
-        @DisplayName("it returns false if the password has less than 1 digit")
-        public void moreThanOneDigit() {
-            String password = generatePassword(6, 0, 1, 0, 1);
-            boolean validation = passwordValidation.validate(password);
-            assertFalse(validation);
-        }
-
-        private final List<StringValidator> secondValidations = List.of(
-                new LengthValidator(6),
-                new LowerCaseValidator(),
-                new UpperCaseValidator(),
-                new DigitValidator());
-
-        private final PasswordValidationService passwordValidation = new PasswordValidationService(secondValidations);
-
-        private String generateCorrectPassword() {
-            return generatePassword(6, 1, 1, 1, 0);
-        }
-
+    @Test
+    @DisplayName("it executes all the validations and return false if there is one or more incorrect")
+    public void passwordIncorrect() {
+        String password = generateIncorrectPassword();
+        boolean validation = passwordValidation.validate(password);
+        validations.forEach((StringValidator validator) -> verify(validator).validate(password));
+        assertFalse(validation);
     }
 
-    @Nested
-    class ThirdValidations {
-        @Test
-        @DisplayName("it returns true if the password is well formed")
-        public void passwordWellFormed() {
-            String password = generateCorrectPassword();
-            boolean validation = passwordValidation.validate(password);
-            assertTrue(validation);
-        }
+    private final List<StringValidator> validations = List.of(
+            Mockito.spy(new LengthValidator(16)),
+            Mockito.spy(new LowerCaseValidator()),
+            Mockito.spy(new UpperCaseValidator()),
+            Mockito.spy(new UnderScoreValidator()));
+    private final List<StringValidator> firstValidations = List.of(
+            new LengthValidator(8),
+            new LowerCaseValidator(),
+            new UpperCaseValidator(),
+            new DigitValidator(),
+            new UnderScoreValidator());
 
+    private final List<StringValidator> secondValidations = List.of(
+            new LengthValidator(6),
+            new LowerCaseValidator(),
+            new UpperCaseValidator(),
+            new DigitValidator());
 
-        @Test
-        @DisplayName("it returns false if the password has less than 16 characters")
-        public void lessThanSixCharacters() {
-            String password = generatePassword(15, 1, 1, 1, 1);
-            boolean validation = passwordValidation.validate(password);
-            assertFalse(validation);
-        }
+    private final List<StringValidator> thirdValidations = List.of(
+            new LengthValidator(16),
+            new LowerCaseValidator(),
+            new UpperCaseValidator(),
+            new UnderScoreValidator());
+    private final PasswordValidationService passwordValidation = new PasswordValidationService(validations);
 
-        @Test
-        @DisplayName("it returns false if the password has less than 1 upper case")
-        public void moreThanOneUpperCase() {
-            String password = generatePassword(16, 1, 0, 1, 1);
-            boolean validation = passwordValidation.validate(password);
-            assertFalse(validation);
-        }
-
-        @Test
-        @DisplayName("it returns false if the password has less than 1 lower case")
-        public void moreThanOneLowerCase() {
-            String password = generatePassword(16, 0, 1, 1, 1);
-            boolean validation = passwordValidation.validate(password);
-            assertFalse(validation);
-        }
-
-        @Test
-        @DisplayName("it returns false if the password has less than 1 underscore")
-        public void moreThanOneUnderScore() {
-            String password = generatePassword(16, 0, 1, 0, 0);
-            boolean validation = passwordValidation.validate(password);
-            assertFalse(validation);
-        }
-
-        private final List<StringValidator> secondValidations = List.of(
-                new LengthValidator(16),
-                new LowerCaseValidator(),
-                new UpperCaseValidator(),
-                new UnderScoreValidator());
-
-        private final PasswordValidationService passwordValidation = new PasswordValidationService(secondValidations);
-
-        private String generateCorrectPassword() {
-            return generatePassword(16, 1, 1, 0, 1);
-        }
-
+    private String generateCorrectPassword() {
+        return generatePassword(16, 1, 1, 0, 1);
     }
 
-
-    private String generatePassword(int characters, int lowerCases, int upperCases, int digits, int underscores) {
-        return UPPER_CASE.repeat(upperCases) +
-                LOWER_CASE.repeat(lowerCases) +
-                DIGIT.repeat(digits) +
-                UNDERSCORE.repeat(underscores) +
-                CHARACTER.repeat(characters - upperCases - lowerCases - digits - underscores);
+    private String generateIncorrectPassword() {
+        return generatePassword(16, 1, 1, 0, 0);
     }
-
-    private static String UPPER_CASE = "A";
-    private static String LOWER_CASE = "a";
-    private static String DIGIT = "1";
-    private static String UNDERSCORE = "_";
-    private static String CHARACTER = "~";
 
 }
