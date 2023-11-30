@@ -1,12 +1,15 @@
 package es.sergomz;
 
+import java.util.List;
+
 public class PasswordValidationService {
+    private final List<StringValidator> validations;
+
+    public PasswordValidationService(List<StringValidator> validations) {
+        this.validations = validations;
+    }
 
     public boolean validate(String password) {
-        return password.length() >= 8 &&
-                password.chars().anyMatch(Character::isUpperCase) &&
-                password.chars().anyMatch(Character::isLowerCase) &&
-                password.chars().anyMatch(Character::isDigit) &&
-                password.chars().anyMatch(c -> ((char) c) == '_');
+        return validations.stream().allMatch((StringValidator validator) -> validator.validate(password));
     }
 }

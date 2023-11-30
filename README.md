@@ -20,19 +20,21 @@ Diseñar e implementar un software que pueda adaptarse a diferentes reglas de va
 
 Supongamos que ahora queremos crear otro tipo de validaciones de contraseñas porque en nuestra app necesitamos diferentes tipos de contraseñas, como por ejemplo:
 
-Validación 2:
+### Validación 2:
 
-Tener más de 6 caracteres
-Contener una letra mayúscula
-Contener una letra minúscula
-Contener un número
-Validación 3:
+* Tener más de 6 caracteres
+* Contener una letra mayúscula
+* Contener una letra minúscula
+* Contener un número
 
-Tener más de 16 caracteres
-Contener una letra mayúscula
-Contener una letra minúscula
-Contener un guión bajo
-Cosas a practicar
+### Validación 3:
+
+* Tener más de 16 caracteres
+* Contener una letra mayúscula
+* Contener una letra minúscula
+* Contener un guión bajo
+
+### Cosas a practicar
 En esta iteración, debemos tratar de identificar una buena abstracción y de trabajar en los principios de OOP, así como en patrones de diseño como Builder y Factory.
 
 ## Restricciones interesantes

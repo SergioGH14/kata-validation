@@ -1,6 +1,10 @@
 import es.sergomz.PasswordValidationService;
+import es.sergomz.StringValidator;
+import es.sergomz.validators.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -69,7 +73,14 @@ class PasswordValidationServiceTest {
                 CHARACTER.repeat(characters - upperCases - lowerCases - digits - underscores);
     }
 
-    private final PasswordValidationService passwordValidation = new PasswordValidationService();
+    private List<StringValidator> firstValidations = List.of(
+            new LengthValidator(8),
+            new LowerCaseValidator(),
+            new UpperCaseValidator(),
+            new DigitValidator(),
+            new UnderScoreValidator());
+
+    private final PasswordValidationService passwordValidation = new PasswordValidationService(firstValidations);
 
     private static String UPPER_CASE = "A";
     private static String LOWER_CASE = "a";
