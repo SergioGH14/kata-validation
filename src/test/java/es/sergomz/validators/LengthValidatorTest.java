@@ -10,8 +10,8 @@ class LengthValidatorTest {
     @DisplayName("it returns true if the password is well formed")
     public void passwordWellFormed() {
         String password = PasswordHelper.generatePassword(length, 1, 1, 1, 1);
-        boolean validation = passwordValidation.validate(password);
-        assertTrue(validation);
+        var validation = passwordValidation.validate(password);
+        assertTrue(validation.result);
     }
 
 
@@ -19,8 +19,8 @@ class LengthValidatorTest {
     @DisplayName("it returns false if the password has less than 8 characters")
     public void lessThanEightCharacters() {
         String password = PasswordHelper.generatePassword(length-1, 1, 1, 1, 1);
-        boolean validation = passwordValidation.validate(password);
-        assertFalse(validation);
+        var validation = passwordValidation.validate(password);
+        assertFalse(validation.result);
     }
 
     private final int length = 5;

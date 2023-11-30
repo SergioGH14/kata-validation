@@ -9,8 +9,7 @@ import org.mockito.Mockito;
 import java.util.List;
 
 import static es.sergomz.validators.PasswordHelper.generatePassword;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 class PasswordValidationServiceTest {
@@ -25,12 +24,13 @@ class PasswordValidationServiceTest {
     }
 
     @Test
-    @DisplayName("it executes all the validations and return false if there is one or more incorrect")
+    @DisplayName("it executes all the validations and if some are incorrect returns result fals and the reason")
     public void passwordIncorrect() {
         String password = generateIncorrectPassword();
         ValidationResult validation = passwordValidation.validate(password);
         validations.forEach((StringValidator validator) -> verify(validator).validate(password));
         assertFalse(validation.result);
+        assertEquals(List.of(new UnderScoreValidator().getErrorMessage()).toString(), validation.message);
     }
 
     private final List<StringValidator> validations = List.of(

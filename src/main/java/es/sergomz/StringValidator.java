@@ -1,6 +1,7 @@
 package es.sergomz;
 
 public interface StringValidator {
-    boolean validate(String input);
+    ValidationResult validate(String input);
 
+    String getErrorMessage();
 }

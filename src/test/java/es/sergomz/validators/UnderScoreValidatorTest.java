@@ -11,16 +11,16 @@ class UnderScoreValidatorTest {
     @DisplayName("it returns true if the password is well formed")
     public void passwordWellFormed() {
         String password = generatePassword(8, 0, 0, 0, 1);
-        boolean validation = passwordValidation.validate(password);
-        assertTrue(validation);
+        var validation = passwordValidation.validate(password);
+        assertTrue(validation.result);
     }
 
     @Test
     @DisplayName("it returns false if the password has less than 1 underscore")
     public void moreThanOneUnderScore() {
         String password = generatePassword(8, 0, 0, 0, 0);
-        boolean validation = passwordValidation.validate(password);
-        assertFalse(validation);
+        var validation = passwordValidation.validate(password);
+        assertFalse(validation.result);
     }
 
     private final UnderScoreValidator passwordValidation = new UnderScoreValidator();
