@@ -1,8 +1,8 @@
 import es.sergomz.PasswordValidationService;
 import es.sergomz.StringValidator;
+import es.sergomz.ValidationResult;
 import es.sergomz.validators.*;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -19,18 +19,18 @@ class PasswordValidationServiceTest {
     @DisplayName("it executes all the validations and return true if all are correct")
     public void passwordWellFormed() {
         String password = generateCorrectPassword();
-        boolean validation = passwordValidation.validate(password);
+        ValidationResult validation = passwordValidation.validate(password);
         validations.forEach((StringValidator validator) -> verify(validator).validate(password));
-        assertTrue(validation);
+        assertTrue(validation.result);
     }
 
     @Test
     @DisplayName("it executes all the validations and return false if there is one or more incorrect")
     public void passwordIncorrect() {
         String password = generateIncorrectPassword();
-        boolean validation = passwordValidation.validate(password);
+        ValidationResult validation = passwordValidation.validate(password);
         validations.forEach((StringValidator validator) -> verify(validator).validate(password));
-        assertFalse(validation);
+        assertFalse(validation.result);
     }
 
     private final List<StringValidator> validations = List.of(

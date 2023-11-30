@@ -9,7 +9,7 @@ public class PasswordValidationService {
         this.validations = validations;
     }
 
-    public boolean validate(String password) {
-        return validations.stream().allMatch((StringValidator validator) -> validator.validate(password));
+    public ValidationResult validate(String password) {
+        return new ValidationResult(validations.stream().allMatch((StringValidator validator) -> validator.validate(password)));
     }
 }
